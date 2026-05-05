@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Go Mobile - مفهوم آخر للتكنولوجيا</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050a14;
+    --surface: #0d1a2e;
+    --accent: #00d4ff;
+    --accent2: #0066ff;
+    --gold: #ffd700;
+    --text: #e8f4ff;
+    --muted: #6b8aaa;
+    --card: #0a1628;
+    --border: rgba(0, 212, 255, 0.15);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; overflow-x: hidden; }
+  body::before {
+    content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(ellipse at 20% 20%, rgba(0,102,255,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(0,212,255,0.06) 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px; pointer-events: none; z-index: 0;
+  }
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    padding: 18px 40px; display: flex; justify-content: space-between; align-items: center;
+    background: rgba(5,10,20,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border);
+  }
+  .logo { font-family: 'Orbitron', monospace; font-size: 1.4rem; font-weight: 900; color: var(--accent); letter-spacing: 2px; text-shadow: 0 0 20px rgba(0,212,255,0.5); }
+  .logo span { color: var(--accent2); }
+  .nav-links { display: flex; gap: 30px; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 600; transition: color 0.3s; }
+  .nav-links a:hover { color: var(--accent); }
+  .hero { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 120px 20px 60px; }
+  .hero-badge { display: inline-block; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: var(--accent); padding: 6px 20px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; letter-spacing: 3px; margin-bottom: 30px; animation: fadeInDown 0.8s ease forwards; }
+  .hero h1 { font-family: 'Orbitron', monospace; font-size: clamp(2.5rem,7vw,5rem); font-weight: 900; line-height: 1.1; margin-bottom: 10px; background: linear-gradient(135deg,#fff 0%,var(--accent) 50%,var(--accent2) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: fadeInUp 0.8s 0.2s ease both; }
+  .hero-sub { font-size: clamp(1rem,2.5vw,1.4rem); color: var(--gold); font-weight: 700; margin-bottom: 15px; letter-spacing: 2px; animation: fadeInUp 0.8s 0.3s ease both; }
+  .hero p { font-size: 1.05rem; color: var(--muted); max-width: 500px; line-height: 1.8; margin-bottom: 40px; animation: fadeInUp 0.8s 0.4s ease both; }
+  .hero-btns { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; animation: fadeInUp 0.8s 0.5s ease both; }
+  .btn-primary { background: linear-gradient(135deg,var(--accent2),var(--accent)); color: #fff; padding: 14px 35px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 1rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 0 25px rgba(0,212,255,0.3); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(0,212,255,0.5); }
+  .btn-outline { border: 1px solid var(--border); color: var(--accent); padding: 14px 35px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 1rem; transition: all 0.2s; }
+  .btn-outline:hover { background: rgba(0,212,255,0.1); border-color: var(--accent); }
+  .phone-float { margin-top: 60px; position: relative; animation: float 4s ease-in-out infinite, fadeInUp 1s 0.6s ease both; }
+  .phone-icon { font-size: 8rem; filter: drop-shadow(0 0 40px rgba(0,212,255,0.4)); }
+  .glow-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 180px; height: 180px; border-radius: 50%; border: 1px solid rgba(0,212,255,0.2); animation: pulse 2s ease-in-out infinite; }
+  .glow-ring:nth-child(2) { width: 240px; height: 240px; animation-delay: 0.5s; border-color: rgba(0,102,255,0.15); }
+  .stats { position: relative; z-index: 1; display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; padding: 60px 40px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(13,26,46,0.5); }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Orbitron', monospace; font-size: 2.5rem; font-weight: 900; color: var(--accent); display: block; text-shadow: 0 0 20px rgba(0,212,255,0.4); }
+  .stat-label { color: var(--muted); font-size: 0.9rem; margin-top: 5px; }
+  section { position: relative; z-index: 1; padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
+  .section-title { text-align: center; margin-bottom: 50px; }
+  .section-title h2 { font-family: 'Orbitron', monospace; font-size: clamp(1.5rem,4vw,2.5rem); font-weight: 900; color: var(--text); margin-bottom: 10px; }
+  .section-title p { color: var(--muted); font-size: 1rem; }
+  .accent-line { width: 60px; height: 3px; background: linear-gradient(90deg,var(--accent2),var(--accent)); margin: 15px auto; border-radius: 2px; }
+  .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 25px; }
+  .product-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 30px 25px; text-align: center; transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s; cursor: pointer; }
+  .product-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 20px 50px rgba(0,212,255,0.1); }
+  .product-icon { font-size: 3.5rem; margin-bottom: 20px; display: block; }
+  .product-card h3 { font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+  .product-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; }
+  .product-tag { display: inline-block; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2); color: var(--accent); padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; margin-top: 15px; }
+  .brands { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; margin-top: 40px; }
+  .brand-pill { background: var(--card); border: 1px solid var(--border); padding: 12px 28px; border-radius: 50px; font-weight: 700; font-size: 0.95rem; color: var(--muted); transition: all 0.3s; }
+  .brand-pill:hover { color: var(--accent); border-color: var(--accent); background: rgba(0,212,255,0.05); }
+  .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 20px; }
+  .contact-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 30px 20px; text-align: center; transition: border-color 0.3s, transform 0.3s; }
+  .contact-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .contact-icon { font-size: 2.5rem; margin-bottom: 15px; display: block; }
+  .contact-card h3 { font-size: 1rem; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+  .contact-card p { color: var(--muted); font-size: 0.9rem; line-height: 1.8; }
+  .contact-card a { color: var(--accent); text-decoration: none; font-weight: 700; }
+  .contact-card a:hover { text-decoration: underline; }
+  .whatsapp-btn { display: inline-block; background: #25D366; color: #fff !important; padding: 10px 20px; border-radius: 8px; text-decoration: none !important; font-weight: 700; font-size: 0.9rem; margin-top: 10px; transition: transform 0.2s; }
+  .whatsapp-btn:hover { transform: translateY(-2px); }
+  footer { position: relative; z-index: 1; text-align: center; padding: 40px 20px; border-top: 1px solid var(--border); background: rgba(5,10,20,0.8); }
+  footer .footer-logo { font-family: 'Orbitron', monospace; font-size: 1.5rem; font-weight: 900; color: var(--accent); margin-bottom: 10px; text-shadow: 0 0 20px rgba(0,212,255,0.4); }
+  footer p { color: var(--muted); font-size: 0.85rem; line-height: 1.8; }
+  footer .company-name { color: var(--gold); font-weight: 700; }
+  @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+  @keyframes pulse { 0%, 100% { opacity: 0.5; transform: translate(-50%,-50%) scale(1); } 50% { opacity: 0.2; transform: translate(-50%,-50%) scale(1.1); } }
+  @media (max-width: 600px) { nav { padding: 15px 20px; } .nav-links { gap: 15px; } .nav-links a { font-size: 0.8rem; } section { padding: 60px 20px; } .stats { gap: 25px; padding: 40px 20px; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">GO<span> MOBILE</span></div>
+  <ul class="nav-links">
+    <li><a href="#products">المنتجات</a></li>
+    <li><a href="#brands">الماركات</a></li>
+    <li><a href="#contact">تواصل معنا</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">✦ مرحباً بك ✦</div>
+  <h1>GO MOBILE</h1>
+  <div class="hero-sub">مفهوم آخر للتكنولوجيا</div>
+  <p>وجهتك الأولى للتلفونات والإكسسوارات بأفضل الأسعار وأعلى جودة</p>
+  <div class="hero-btns">
+    <a href="#products" class="btn-primary">تصفح المنتجات</a>
+    <a href="#contact" class="btn-outline">تواصل معنا</a>
+  </div>
+  <div class="phone-float">
+    <div class="glow-ring"></div>
+    <div class="glow-ring"></div>
+    <div class="phone-icon">📱</div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><span class="stat-num">500+</span><div class="stat-label">منتج متوفر</div></div>
+  <div class="stat"><span class="stat-num">20+</span><div class="stat-label">ماركة عالمية</div></div>
+  <div class="stat"><span class="stat-num">100%</span><div class="stat-label">ضمان الجودة</div></div>
+  <div class="stat"><span class="stat-num">⭐ 5</span><div class="stat-label">تقييم العملاء</div></div>
+</div>
+
+<section id="products">
+  <div class="section-title">
+    <h2>منتجاتنا</h2>
+    <div class="accent-line"></div>
+    <p>أحدث التلفونات والإكسسوارات بين يديك</p>
+  </div>
+  <div class="products-grid">
+    <div class="product-card"><span class="product-icon">📱</span><h3>تلفونات ذكية</h3><p>أحدث إصدارات الهواتف الذكية من أشهر الماركات العالمية بأسعار تنافسية</p><span class="product-tag">متوفر الآن</span></div>
+    <div class="product-card"><span class="product-icon">🎧</span><h3>سماعات</h3><p>سماعات لاسلكية وسلكية بجودة صوت عالية لأفضل تجربة استماع</p><span class="product-tag">متوفر الآن</span></div>
+    <div class="product-card"><span class="product-icon">🔋</span><h3>شواحن وبطاريات</h3><p>شواحن سريعة وبطاريات احتياطية لتبقى متصلاً في كل وقت</p><span class="product-tag">متوفر الآن</span></div>
+    <div class="product-card"><span class="product-icon">🛡️</span><h3>حافظات وكفرات</h3><p>حماية أنيقة لجهازك من أفضل المواد بتصاميم متنوعة وعصرية</p><span class="product-tag">متوفر الآن</span></div>
+    <div class="product-card"><span class="product-icon">🔌</span><h3>كابلات وأسلاك</h3><p>كابلات بيانات وشحن متينة وعالية الجودة لجميع أنواع الأجهزة</p><span class="product-tag">متوفر الآن</span></div>
+    <div class="product-card"><span class="product-icon">⌚</span><h3>ساعات ذكية</h3><p>ساعات ذكية وأجهزة قابلة للارتداء لمتابعة صحتك ونشاطك اليومي</p><span class="product-tag">متوفر الآن</span></div>
+  </div>
+</section>
+
+<section id="brands" style="background: rgba(13,26,46,0.4); max-width:100%; padding: 80px 40px;">
+  <div style="max-width:1200px; margin:0 auto;">
+    <div class="section-title">
+      <h2>الماركات المتوفرة</h2>
+      <div class="accent-line"></div>
+      <p>نوفر أشهر وأفضل الماركات العالمية</p>
+    </div>
+    <div class="brands">
+      <div class="brand-pill">Apple</div>
+      <div class="brand-pill">Samsung</div>
+      <div class="brand-pill">Huawei</div>
+      <div class="brand-pill">Xiaomi</div>
+      <div class="brand-pill">OnePlus</div>
+      <div class="brand-pill">Oppo</div>
+      <div class="brand-pill">Realme</div>
+      <div class="brand-pill">Nokia</div>
+      <div class="brand-pill">Sony</div>
+      <div class="brand-pill">Google</div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="section-title">
+    <h2>تواصل معنا</h2>
+    <div class="accent-line"></div>
+    <p>نحن هنا لخدمتك في أي وقت</p>
+  </div>
+  <div class="contact-grid">
+
+```
+<div class="contact-card">
+  <span class="contact-icon">📍</span>
+  <h3>موقعنا</h3>
+  <p>اليمن - صنعاء<br>شارع القيادة<br>أمام جامع الشوكاني</p>
+</div>
+
+<div class="contact-card">
+  <span class="contact-icon">📞</span>
+  <h3>اتصل بنا</h3>
+  <p>
+    <a href="tel:+967777000430">+967 777 000 430</a>
+    <br><small style="color:var(--muted);">الرقم الرئيسي</small>
+    <br><br>
+    <a href="tel:+967770444757">+967 770 444 757</a>
+  </p>
+</div>
+
+<div class="contact-card">
+  <span class="contact-icon">💬</span>
+  <h3>واتساب</h3>
+  <p>تواصل معنا مباشرة للرد السريع</p>
+  <a href="https://wa.me/967777000430" class="whatsapp-btn" target="_blank">واتساب الرئيسي</a><br>
+  <a href="https://wa.me/967770444757" class="whatsapp-btn" style="margin-top:8px;" target="_blank">واتساب ثاني</a>
+</div>
+
+<div class="contact-card">
+  <span class="contact-icon">📧</span>
+  <h3>البريد الإلكتروني</h3>
+  <p><a href="mailto:gomobile.yemen@gmail.com">gomobile.yemen@gmail.com</a></p>
+</div>
+
+<div class="contact-card">
+  <span class="contact-icon">📘</span>
+  <h3>فيسبوك</h3>
+  <p><a href="https://facebook.com/GOMobile.yemen" target="_blank">GOMobile.yemen</a></p>
+</div>
+
+<div class="contact-card">
+  <span class="contact-icon">🕐</span>
+  <h3>أوقات العمل</h3>
+  <p>
+    السبت - الخميس<br>
+    <strong style="color:var(--accent);">9 صباحاً - 11 مساءً</strong><br><br>
+    الجمعة: أحياناً
+  </p>
+</div>
+```
+
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">GO MOBILE</div>
+  <p>مفهوم آخر للتكنولوجيا</p>
+  <p style="margin-top:8px;"><span class="company-name">صالح العنز للتجارة</span></p>
+  <p style="margin-top:5px;">صنعاء، اليمن</p>
+  <p style="margin-top:15px; font-size:0.8rem;">© 2025 جميع الحقوق محفوظة</p>
+</footer>
+
+</body>
+</html>
